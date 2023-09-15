@@ -2,7 +2,7 @@
 
 string base_path = R"(C:\Games\Plants vs. Zombies\Data\刷新\自然自测\PE)";
 
-auto default_conf = TaskBuilder().total(1000);
+auto default_conf = TaskBuilder().total(1000).uniform_summon(false);
 auto norm_act = default_conf.huge(false).assume_refresh(true);
 auto norm_sep = default_conf.huge(false).assume_refresh(false);
 auto huge_act = default_conf.huge(true).assume_refresh(true);

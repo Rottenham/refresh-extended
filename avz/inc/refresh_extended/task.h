@@ -61,7 +61,7 @@ private:
     _REISEN_TASK_H_MEMBER_REQUIRED(std::vector<ZombieType>, banned_types)
     _REISEN_TASK_H_MEMBER_REQUIRED(std::vector<Action>, actions)
     _REISEN_TASK_H_MEMBER_OPTIONAL(bool, debug, false)
-    _REISEN_TASK_H_MEMBER_OPTIONAL(bool, uniform_summon, true)
+    _REISEN_TASK_H_MEMBER_OPTIONAL(bool, uniform_summon, false)
     _REISEN_TASK_H_MEMBER_OPTIONAL(bool, clear_zombies, true)
     _REISEN_TASK_H_MEMBER_OPTIONAL(bool, dance_cheat, true)
     _REISEN_TASK_H_MEMBER_OPTIONAL(int, giga_count, -1)
