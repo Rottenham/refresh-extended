@@ -1,1 +1,5 @@
-{ BasedOnStyle: WebKit, AlignTrailingComments: true, Cpp11BracedListStyle: true, SortIncludes: false, ColumnLimit: 100 }
+BasedOnStyle: WebKit
+AlignTrailingComments: true
+Cpp11BracedListStyle: true
+SortIncludes: false
+ColumnLimit: 100
