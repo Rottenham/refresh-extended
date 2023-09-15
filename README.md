@@ -39,7 +39,7 @@ D             // 开启Dance Cheat（若不开启则不标注）
 
 ### 安装可多开、已解锁隐藏页面的英文原版PvZ
 
-可从 [pt站](https://pvz.tools/download/)下载。
+可从 [pt 站](https://pvz.tools/download/)下载。
 
 > 注：请勿使用囧姨站的文件。
 
