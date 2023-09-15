@@ -17,7 +17,7 @@ pvz = r"C:\Program Files\Plants vs. Zombies 1.0.0.1051 EN\PlantsVsZombies.exe"  
 injector = r"bin\injector.exe"  # 注入器路径
 dll_folder = r"dest"  # dll文件夹
 batch_count = 10  # 批次数量
-batch_to_run = (1, 2)  # 要运行的批次（含）
+batch_to_run = (1, 10)  # 要运行的批次（含）
 se_mode = SEMode.POOL  # 存档所在的SE模式（需启用隐藏页面）
 loading_time_seconds = 5  # PvZ从启动到加载完毕所需时间，若配置较低请增加此值
 

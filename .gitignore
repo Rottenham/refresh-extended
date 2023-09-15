@@ -1,4 +1,6 @@
 bin/*.dll
 .vscode
 __pycache__
-dest
+dest*
+compile.py
+run.py

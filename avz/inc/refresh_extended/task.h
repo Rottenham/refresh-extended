@@ -94,14 +94,13 @@ public:
         ss << "n(" << zombie_types_to_string(banned_types_) << ")";
         if (giga_count_ >= 0)
             ss << "g(" << std::to_string(giga_count_) << ")";
-        if (assume_refresh_)
-            ss << "R";
+        ss << assume_refresh_ ? "R" : "S";
         if (huge_)
             ss << "H";
-        if (dance_cheat_)
-            ss << "D";
         if (uniform_summon_)
             ss << "U";
+        if (dance_cheat_)
+            ss << "D";
         auto output_filename = ss.str();
         std::vector<std::function<void(int)>> operations;
         for (const auto& action : actions_) {
