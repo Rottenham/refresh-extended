@@ -2,5 +2,3 @@ bin/*.dll
 .vscode
 __pycache__
 dest*
-compile.py
-run.py
