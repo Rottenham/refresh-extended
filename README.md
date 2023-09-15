@@ -37,6 +37,13 @@ U             // 使用极限出怪（若使用自然出怪则不标注）
 
 本框架只支持AvZ1.
 
+### 安装可多开、已解锁隐藏页面的英文原版PvZ
+
+见 [pt站](https://pvz.tools/download/)。
+
+> 注：囧姨站的文件可能有些问题。
+
+
 ### 安装插件
 
 将 `avz\inc` 目录下的文件复制至 `你的AvZ安装目录\inc` 下。请根据 `information.txt` 下载所依赖的其它插件。
@@ -49,7 +56,6 @@ U             // 使用极限出怪（若使用自然出怪则不标注）
 ```
 ...\refresh_tests
 └─bin
-   ├─pvz（快捷方式）
    └─injector.exe
 ├─compile.py
 ├─run.py

@@ -13,7 +13,7 @@ class SEMode(Enum):
 ########## 配置部分 ##########
 
 # 根据实际情况修改以下值
-pvz_shortcut = r"bin\pvz"  # PvZ快捷方式路径
+pvz = r"C:\Program Files\Plants vs. Zombies 1.0.0.1051 EN\PlantsVsZombies.exe"  # PvZ路径
 injector = r"bin\injector.exe"  # 注入器路径
 dll_folder = r"dest"  # dll文件夹
 batch_count = 10  # 批次数量
@@ -29,8 +29,10 @@ current_directory = os.getcwd()
 lock = threading.Lock()
 batch_start, batch_end = batch_to_run
 
+os.chdir(os.path.dirname(pvz))
 for i in range(batch_end - batch_start + 1):
-    os.startfile(rf".\{pvz_shortcut}")
+    os.startfile(pvz)
+os.chdir(current_directory)
 time.sleep(1.5)
 
 print("开始注入...")
