@@ -84,7 +84,7 @@ D             // 开启Dance Cheat（若不开启则不标注）
 .\run.py
 ```
 
-检查输出文件是否完好存在。若无输出文件，是因为没有建立对应子文件夹（可复制本仓库提供的 template 文件夹）。
+检查输出文件是否完好存在。
 
 ### 开测！
 
@@ -93,7 +93,7 @@ D             // 开启Dance Cheat（若不开启则不标注）
 - `batch_count = 100`（根据试运行所花时长调整）
 - `num_of_batch_to_run = 10`（对应 PvZ 10开，若配置较低可改为 5）
 
-然后依次执行：
+依次执行：
 ```console
 .\compile.py
 .\run.py
@@ -107,7 +107,7 @@ D             // 开启Dance Cheat（若不开启则不标注）
 
 扩展版与原插件不兼容，暂时没有合并的打算。
 
-> `pe-active.cpp` 是什么？
+> `PE-active.cpp` 是什么？
 
 它涵盖了[自然出怪论 Part2](https://docs.qq.com/doc/DTlpGdUpmYkpxZEVZ) 中 `PE\...\激活` 的所有测试<del>（还附赠了原数据里缺失的2条数据）</del>。
 

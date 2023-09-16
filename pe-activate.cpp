@@ -1,26 +1,13 @@
 #include "refresh_extended/refresh.h"
 
 /***** 配置部分 *****/
-string base_path = R"(C:\Games\Plants vs. Zombies\Data\刷新\自然自测\PE)"; // 输出文件夹位置
+string base_path = R"(C:\Games\Plants vs. Zombies\Data\刷新\自然自测\PE)"; // 输出文件夹位置（若不存在则自动创建）
 const int TOTAL_ROUND = 1000;                                              // 测试选卡数
 /***** 配置部分结束 *****/
 
 /*
-请确保输出文件夹包含如下子目录（可复制template文件夹）:
-└─ 红白
-   ├─ 激活
-   └─ 分离
-└─ 红
-   ├─ 激活
-   ├─ 大波激活
-   └─ 分离
-└─ 白
-   └─ 分离
-└─ 快速
-   ├─ 大波激活
-   └─ 分离
-
 测试用阵型的布阵码：LI43bJyUlFSWXNR1tiSEVdUzbnA2RzV0lkhU5K1E11Y=
+(存档在 saves 文件夹下)
 
 PvZ 10开的情况下，运行以下脚本需要约 [TOTAL_ROUND * 3]s
 */
