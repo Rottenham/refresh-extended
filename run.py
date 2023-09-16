@@ -52,7 +52,7 @@ for i in range(batch_end - batch_start + 1):
 os.chdir(current_directory)
 time.sleep(1.5)
 
-print("开始注入...")
+print("开始注入...", end="", flush=True)
 all_dll_names = ""
 for i in range(batch_start, batch_end + 1):
     all_dll_names += (
@@ -60,7 +60,7 @@ for i in range(batch_start, batch_end + 1):
     )
 process = subprocess.Popen(rf".\{injector} {all_dll_names}")
 process.wait()
-print("注入完毕.")
+print(" 完毕.")
 
 import ctypes
 import time
@@ -159,7 +159,7 @@ if len(pvz_windows) < batch_end - batch_start + 1:
 
 if se_mode in MOUSE_POS:
     time.sleep(loading_time_seconds)
-    print("开始点击...")
+    print("开始点击...", end="", flush=True)
     for hwnd in pvz_windows:
         left_click(hwnd, 400, 400)
     time.sleep(1.5)
@@ -173,4 +173,4 @@ with open(rf".\{dll_folder}\run_config.json", "w") as f:
     json.dump({"completed_count": batch_end, "batch_count": batch_count}, f)
 
 
-print("完毕.")
+print(" 完毕.")
