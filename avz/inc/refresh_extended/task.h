@@ -55,7 +55,7 @@ std::vector<int> deduce_check_time(
     if (!original_check_time.empty()) {
         return original_check_time;
     } else {
-        return {sorted_actions.back().time};
+        return {max(sorted_actions.back().time, 401)};
     }
 }
 
