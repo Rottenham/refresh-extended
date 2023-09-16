@@ -2,17 +2,15 @@
 
 #include "task.h"
 
-using namespace std;
-
 struct RefreshData {
     double wave_prob[21], hp_ratio[21];
-    map<int, int> left_count[21];
+    std::map<int, int> left_count[21];
     double result, sum;
     int hist[41];
-    vector<tuple<double, int, string>> ranking;
+    std::vector<std::tuple<double, int, std::string>> ranking;
 };
 
-vector<Task>::iterator cur_task;
+std::vector<Task>::iterator cur_task;
 int progress;
-vector<int> type_list;
-vector<RefreshData> refresh_data;
+std::vector<int> type_list;
+std::vector<RefreshData> refresh_data;

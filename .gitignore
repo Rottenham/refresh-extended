@@ -2,3 +2,4 @@ bin/*.dll
 .vscode
 __pycache__
 dest*
+local

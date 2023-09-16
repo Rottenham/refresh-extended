@@ -2,9 +2,9 @@
 
 # 根据实际情况修改以下值
 avz_dir = r"C:\Games\Plants vs. Zombies\Tools\src\AsmVsZombies"  # AvZ安装目录
-dll_count = 10  # 编译为多少个dll文件
-source = r"pe-activate.cpp"  # 源码文件名
-destination = r"dest"  # 输出文件夹
+dll_count = 1  # 编译为多少个dll文件
+source = r"pe-test.cpp"  # 源码文件名
+destination = r"dest_test"  # 输出文件夹
 
 ########## 配置部分结束 ##########
 
@@ -12,7 +12,7 @@ from concurrent.futures import ThreadPoolExecutor
 import subprocess, threading, os, json, sys
 
 test_run = len(sys.argv) >= 2 and sys.argv[1] == "-test"
-print("编译模式: " + "试运行" if test_run else "正式运行")
+print(f"即将编译 {source} ({'试运行' if test_run else '正式运行'})")
 
 
 if not os.path.exists(destination):
@@ -42,3 +42,4 @@ with open(rf".\{destination}\run_config.json", "w") as f:
     json.dump({"completed_count": 0, "batch_count": dll_count}, f)
 
 print("完毕.")
+print(f"输出文件夹: {destination}")

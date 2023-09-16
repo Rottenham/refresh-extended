@@ -16,7 +16,7 @@ std::string to_gbk(std::string s)
 
 enum WaveType { DEFAULT, ALL_NORMAL, ALL_HUGE };
 
-const std::map<ZombieType, std::string> zombie_name = {
+const std::map<ZombieType, std::string> ZOMBIE_NAME = {
     {ZOMBIE, "普"},
     {CONEHEAD_ZOMBIE, "路"},
     {POLE_VAULTING_ZOMBIE, "杆"},
@@ -44,10 +44,28 @@ std::string zombie_types_to_string(const std::vector<ZombieType>& types)
 {
     std::string output = "";
     for (const auto& type : types) {
-        auto name = zombie_name.find(type);
-        if (name != zombie_name.end()) {
+        auto name = ZOMBIE_NAME.find(type);
+        if (name != ZOMBIE_NAME.end()) {
             output += name->second;
         }
     }
     return output;
+}
+
+template <typename T> bool contains(const std::vector<T>& vec, T val)
+{
+    return std::find(vec.begin(), vec.end(), val) != vec.end();
+}
+
+std::vector<std::string> split(std::string string, const std::string& delimiter)
+{
+    std::vector<std::string> tokens;
+    size_t pos = 0;
+    while ((pos = string.find(delimiter)) != std::string::npos) {
+        tokens.push_back(string.substr(0, pos));
+        string.erase(0, pos + delimiter.length());
+    }
+    if (!string.empty())
+        tokens.push_back(string);
+    return tokens;
 }

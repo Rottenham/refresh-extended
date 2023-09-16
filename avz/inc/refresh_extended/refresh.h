@@ -45,9 +45,9 @@ void unify_zombie_spawn_x(WaveType wave_type)
 {
     if (wave_type == DEFAULT)
         return;
-    auto x_offset = (wave_type == ALL_HUGE) ? 40 : -40;
-    set<ZombieType> excluded_zombie_types = {FLAG_ZOMBIE, POLE_VAULTING_ZOMBIE, ZOMBONI,
+    const set<ZombieType> EXCLUDED_ZOMBIE_TYPES = {FLAG_ZOMBIE, POLE_VAULTING_ZOMBIE, ZOMBONI,
         CATAPULT_ZOMBIE, GARGANTUAR, GIGA_GARGANTUAR, BUNGEE_ZOMBIE};
+    auto x_offset = (wave_type == ALL_HUGE) ? 40 : -40;
     for (auto wave = 1; wave <= 20; wave++) {
         if ((wave_type == ALL_HUGE) && (wave == 10 || wave == 20))
             continue;
@@ -57,10 +57,7 @@ void unify_zombie_spawn_x(WaveType wave_type)
             1, wave,
             [=]() {
                 for (auto& z : alive_zombie_filter) {
-                    if (z.existTime() >= 5)
-                        continue;
-                    if (excluded_zombie_types.find((ZombieType)z.type())
-                        != excluded_zombie_types.end())
+                    if (z.existTime() >= 5 || EXCLUDED_ZOMBIE_TYPES.count((ZombieType)z.type()))
                         continue;
                     z.abscissa() += x_offset;
                 }
@@ -69,31 +66,26 @@ void unify_zombie_spawn_x(WaveType wave_type)
     }
 }
 
-void kill_all_zombies(const set<int>& wave, const set<ZombieType>& type_list = {}, int time = 1)
+void kill_all_zombies(const set<int>& waves, const set<ZombieType>& type_list = {}, int time = 1)
 {
-    if (time < 0) {
-        time = 1;
-    }
-    for (auto w : wave) {
-        if (w >= 1 && w <= 20) {
+    time = time < 1 ? 1 : time;
+    for (const auto& wave : waves) {
+        if (wave >= 1 && wave <= 20)
             AvZ::InsertTimeOperation(
-                time, w,
+                time, wave,
                 [=]() {
                     for (auto& z : alive_zombie_filter) {
-                        if (type_list.empty()
-                            || type_list.find((ZombieType)z.type()) != type_list.end()) {
+                        if (type_list.empty() || type_list.count((ZombieType)z.type())) {
                             z.state() = 3;
                         }
                     }
                 },
                 "kill_all_zombies");
-        }
     }
 }
 
 vector<Task> get_tasks_in_current_batch()
 {
-    auto tasks = get_tasks(); // 拆分测试任务
     int batch_count = 1;
     int batch_index = 1; // 从1开始
 #ifdef BATCH_COUNT
@@ -102,10 +94,13 @@ vector<Task> get_tasks_in_current_batch()
 #ifdef BATCH_INDEX
     batch_index = BATCH_INDEX;
 #endif
+    auto tasks = get_tasks();
     vector<Task> tasks_in_current_batch;
-    for (auto i = 0; i < tasks.size(); i++) {
-        if (i % batch_count == batch_index - 1)
-            tasks_in_current_batch.push_back(tasks[i]);
+    int index = 0;
+    for (const auto& task : tasks) {
+        if (index % batch_count == batch_index - 1)
+            tasks_in_current_batch.push_back(task);
+        index++;
     }
     return tasks_in_current_batch;
 }
@@ -115,7 +110,7 @@ void initialize_task()
     progress = 0;
     refresh_data.clear();
     sort(cur_task->check_time.begin(), cur_task->check_time.end());
-    for (int i = 0; i < cur_task->check_time.size(); i++) {
+    for (auto _ : cur_task->check_time) {
         RefreshData rd;
         rd.result = rd.sum = 0;
         memset(rd.hist, 0, sizeof(rd.hist));
@@ -135,6 +130,9 @@ void Script()
             return;
         }
         cur_task = all_tasks.begin();
+        if (!ensure_folder_exists(cur_task->output_folder)) {
+            return;
+        }
         initialize_task();
         extract_exe();
     }
@@ -208,10 +206,10 @@ void Script()
                     rd.left_count[wave].clear();
                     for (auto& z : alive_zombie_filter) {
                         if (z.standState() == wave - 1 && !z.mRef<bool>(0xb8)) {
-                            if (!RangeIn(z.type(), {BACKUP_DANCER, BUNGEE_ZOMBIE}))
+                            if (!contains({BACKUP_DANCER, BUNGEE_ZOMBIE}, z.type()))
                                 hp += z.hp() + z.oneHp() + z.twoHp() / 5 + z.mRef<int>(0xe4);
                             int type = z.type();
-                            if (RangeIn(z.type(), {GARGANTUAR, GIGA_GARGANTUAR}))
+                            if (contains({GARGANTUAR, GIGA_GARGANTUAR}, z.type()))
                                 type = z.type() * 10 + ceil(z.hp() / 1800.0);
                             rd.left_count[wave][type]++;
                         }

@@ -71,10 +71,9 @@ std::vector<int> deduce_card_selection(const std::vector<Action>& sorted_actions
 
 std::vector<std::function<void(int)>> get_operations(const std::vector<Action>& sorted_actions)
 {
-    std::vector<std::function<void(int)>> operations;
-    for (const auto& action : sorted_actions) {
-        operations.push_back(action.operation);
-    }
+    std::vector<std::function<void(int)>> operations(sorted_actions.size());
+    std::transform(sorted_actions.begin(), sorted_actions.end(), operations.begin(),
+        [](Action a) { return a.operation; });
     return operations;
 }
 
@@ -127,11 +126,7 @@ public:
 
         auto deduced_check_time = deduce_check_time(check_time_, sorted_actions);
         auto deduced_card_selection = deduce_card_selection(sorted_actions);
-        auto validated_giga_count
-            = std::find(sorted_required_types.begin(), sorted_required_types.end(), GIGA_GARGANTUAR)
-                == sorted_required_types.end()
-            ? -1
-            : giga_count_;
+        auto validated_giga_count = contains(required_types_, GIGA_GARGANTUAR) ? giga_count_ : -1;
         auto operations = get_operations(sorted_actions);
 
         // 构建 output filename

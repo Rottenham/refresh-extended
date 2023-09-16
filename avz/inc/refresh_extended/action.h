@@ -5,59 +5,44 @@
 
 using namespace AvZ;
 
-std::string float_to_human_friendly_string(float f)
-{
-    auto str = std::to_string(f);
-    str.erase(str.find_last_not_of('0') + 1, std::string::npos); // 移除尾随零
-    str.erase(str.find_last_not_of('.') + 1, std::string::npos);
-    return str;
-}
-
-std::string floats_to_human_friendly_string(
-    const std::vector<float>& floats, const std::string& sep = ",")
-{
-    std::stringstream ss;
-    bool first = true;
-    for (const auto& f : floats) {
-        if (first) {
-            first = false;
-        } else {
-            ss << sep;
-        }
-        ss << float_to_human_friendly_string(f);
-    }
-    return ss.str();
-}
-
-std::string ints_to_string(const std::vector<int>& ints, const std::string& sep = ",")
-{
-    std::stringstream ss;
-    bool first = true;
-    for (const auto& i : ints) {
-        if (first) {
-            first = false;
-        } else {
-            ss << sep;
-        }
-        ss << std::to_string(i);
-    }
-    return ss.str();
-}
-
 std::string plant_type_to_symbol(PlantType plant_type)
 {
     auto non_imitator_plant_type = plant_type > IMITATOR ? plant_type - IMITATOR - 1 : plant_type;
-    if (non_imitator_plant_type == ICE_SHROOM) {
+    switch (non_imitator_plant_type) {
+    case ICE_SHROOM:
         return "I";
-    } else if (non_imitator_plant_type == CHERRY_BOMB) {
+    case CHERRY_BOMB:
         return "A";
-    } else if (non_imitator_plant_type == JALAPENO) {
+    case JALAPENO:
         return "J"; // 使用J而非A'，节省文件名长度且更清晰
-    } else if (non_imitator_plant_type == SQUASH) {
+    case SQUASH:
         return "W"; // 使用W而非a，因为NTFS不区分大小写
-    } else {
-        return "C" + std::to_string(plant_type);
+    default:
+        return "C" + std::to_string(non_imitator_plant_type);
     }
+}
+
+std::string concat(const std::vector<std::string>& strings, const std::string& sep)
+{
+    std::ostringstream os;
+    bool first = true;
+    for (const auto& str : strings) {
+        if (first) {
+            first = false;
+        } else {
+            os << sep;
+        }
+        os << str;
+    }
+    return os.str();
+}
+
+std::string ints_to_string(const std::vector<int>& ints, const std::string& sep)
+{
+    std::vector<std::string> int_strings(ints.size());
+    std::transform(
+        ints.begin(), ints.end(), int_strings.begin(), [](int i) { return std::to_string(i); });
+    return concat(int_strings, sep);
 }
 
 struct Action {
@@ -71,14 +56,14 @@ struct Action {
 
 Action FixedCard(int time, PlantType plant_type, int row, int col, int shovel_delay = -1)
 {
-    std::stringstream ss;
+    std::ostringstream os;
     auto symbol = plant_type_to_symbol(plant_type);
     if (symbol == "I") {
-        ss << symbol << "(" << time << ")";
+        os << symbol << "(" << time << ")";
     } else {
-        ss << symbol << "(" << time << "," << row << "-" << col << ")";
+        os << symbol << "(" << time << "," << row << "-" << col << ")";
     }
-    return {time, ss.str(),
+    return {time, os.str(),
         [time, plant_type, row, col, shovel_delay](int wave) {
             if (plant_type == SQUASH) {
                 SetTime(time - 182, wave);
@@ -121,29 +106,28 @@ struct Strategy {
     }
 };
 
+std::string strategies_to_string(const std::vector<Strategy>& strategies)
+{
+    std::vector<std::string> strategy_strings(strategies.size());
+    std::transform(strategies.begin(), strategies.end(), strategy_strings.begin(),
+        [](Strategy s) { return s.to_string(); });
+    return concat(strategy_strings, ",");
+}
+
 Action SmartCard(int time, PlantType plant_type, std::vector<ZombieType> assessed_types,
     const std::vector<Strategy>& strategies, int col)
 {
     std::sort(assessed_types.begin(), assessed_types.end(),
         [](ZombieType a, ZombieType b) { return a > b; });
-    std::stringstream ss;
+    std::ostringstream os;
     auto symbol = plant_type_to_symbol(plant_type);
     if (symbol == "I") {
-        ss << symbol << "(" << time << ")";
+        os << symbol << "(" << time << ")";
     } else {
-        ss << symbol << "(" << time << "," << zombie_types_to_string(assessed_types) << "[";
-        bool first = true;
-        for (const auto& strategy : strategies) {
-            if (first) {
-                first = false;
-            } else {
-                ss << ",";
-            }
-            ss << strategy.to_string();
-        }
-        ss << "]-" << col << ")";
+        os << symbol << "(" << time << "," << zombie_types_to_string(assessed_types) << "["
+           << strategies_to_string(strategies) << "]-" << col << ")";
     }
-    return {time, ss.str(),
+    return {time, os.str(),
         [time, plant_type, assessed_types, strategies, col](int wave) {
             InsertTimeOperation(
                 time - 100, wave,
@@ -156,16 +140,15 @@ Action SmartCard(int time, PlantType plant_type, std::vector<ZombieType> assesse
                     }
                     int zombie_count[7] = {0};
                     for (auto& z : alive_zombie_filter) {
-                        if (std::find(assessed_types.begin(), assessed_types.end(), z.type())
-                            != assessed_types.end())
+                        if (contains(assessed_types, (ZombieType)z.type()))
                             zombie_count[z.row() + 1]++;
                     }
                     auto best_strategy = std::max_element(strategies.begin(), strategies.end(),
                         [zombie_count](const Strategy& s1, const Strategy& s2) {
                             auto get_strategy_count = [zombie_count](const Strategy& s) {
                                 int count = 0;
-                                for (const auto& row : s.assessed_rows)
-                                    count += zombie_count[row];
+                                for (const auto& r : s.assessed_rows)
+                                    count += zombie_count[r];
                                 return count;
                             };
                             return get_strategy_count(s1) < get_strategy_count(s2);
@@ -181,22 +164,23 @@ Action SmartCard(int time, PlantType plant_type, std::vector<ZombieType> assesse
 
 Action Cob(int time, std::string symbol, const std::vector<int>& rows, float col)
 {
-    std::stringstream ss;
-    ss << symbol << "(" << time << ",";
+    std::ostringstream os;
+    os << symbol << "(" << time << ",";
     if (rows.size() > 1) {
-        ss << "{" << ints_to_string(rows) << "}";
+        os << "{" << ints_to_string(rows, ",") << "}";
     } else {
-        ss << rows[0];
+        os << rows[0];
     }
-    ss << "-" << col << ")";
-    return {time, ss.str(),
+    os << "-" << col << ")";
+    return {time, os.str(),
         [time, rows, col](int wave) {
+            auto roof = GetMainObject()->scene() >= 4;
+            auto backyard = RangeIn(GetMainObject()->scene(), {2, 3});
             for (const auto& row : rows)
-                if (GetMainObject()->scene() >= 4) { // 屋顶场合
+                if (roof) {
                     SetTime(time - 387, wave);
                     pao_operator.roofPao(row, col);
-                } else if ((GetMainObject()->scene() == 2 || GetMainObject()->scene() == 3)
-                    && (RangeIn(row, {3, 4}))) { // 炮击泳池
+                } else if (backyard && (RangeIn(row, {3, 4}))) {
                     SetTime(time - 378, wave);
                     pao_operator.pao(row, col);
                 } else {
