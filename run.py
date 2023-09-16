@@ -16,18 +16,35 @@ class SEMode(Enum):
 pvz = r"C:\Program Files\Plants vs. Zombies 1.0.0.1051 EN\PlantsVsZombies.exe"  # PvZ路径
 injector = r"bin\injector.exe"  # 注入器路径
 dll_folder = r"dest"  # dll文件夹
-batch_count = 10  # 批次数量
-batch_to_run = (1, 10)  # 要运行的批次（含）
+num_of_batch_to_run = 10  # 要运行的批次数
 se_mode = SEMode.POOL  # 存档所在的SE模式（需启用隐藏页面）
 loading_time_seconds = 5  # PvZ从启动到加载完毕所需时间，若配置较低请增加此值
 
 ########## 配置部分结束 ##########
 
-import subprocess, threading, os, time
+import subprocess, threading, os, time, json
+
+try:
+    with open(rf".\{dll_folder}\run_config.json", "r") as f:
+        config = json.load(f)
+        batch_count = config["batch_count"]
+        batch_start = config["completed_count"] + 1
+        if batch_start >= batch_count:
+            print("已完成所有测试.")
+            exit()
+        batch_end = min(batch_start + num_of_batch_to_run - 1, batch_count)
+        print(f"已完成 {batch_start - 1}/{batch_count}.")
+        user_input = input(f"是否开始 {batch_start}~{batch_end}?(Y/n) ")
+        if user_input.strip().upper() not in ["", "Y"]:
+            exit()
+
+except Exception as e:
+    print(f"错误: {e}")
+    print("请重新运行compile.py.")
+    exit(1)
 
 current_directory = os.getcwd()
 lock = threading.Lock()
-batch_start, batch_end = batch_to_run
 
 os.chdir(os.path.dirname(pvz))
 for i in range(batch_end - batch_start + 1):
@@ -150,5 +167,10 @@ if se_mode in MOUSE_POS:
         for hwnd in pvz_windows:
             left_click(hwnd, x, y)
         time.sleep(0.25)
+
+
+with open(rf".\{dll_folder}\run_config.json", "w") as f:
+    json.dump({"completed_count": batch_end, "batch_count": batch_count}, f)
+
 
 print("完毕.")

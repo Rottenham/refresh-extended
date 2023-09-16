@@ -2,14 +2,14 @@
 
 # 根据实际情况修改以下值
 avz_dir = r"C:\Games\Plants vs. Zombies\Tools\src\AsmVsZombies"  # AvZ安装目录
-batch_count = 10  # 批次数量
+batch_count = 100  # 批次总数量
 source = r"pe-activate.cpp"  # 源码文件名
 destination = r"dest"  # 输出文件夹
 
 ########## 配置部分结束 ##########
 
 from concurrent.futures import ThreadPoolExecutor
-import subprocess, threading, os
+import subprocess, threading, os, json
 
 
 if not os.path.exists(destination):
@@ -34,5 +34,8 @@ with ThreadPoolExecutor() as executor:
         dll_name = f"batch_{i}_of_{batch_count}.dll"
         cmd = rf'set "PATH={avz_dir}\MinGW\bin;%PATH%" && "{avz_dir}\MinGW\bin\g++" ".\{source}" -std=c++1z -I "{avz_dir}\inc" -lavz -lgdi32 -L "{avz_dir}\bin" -shared -DBATCH_COUNT={batch_count} -DBATCH_INDEX={i} -o ".\{destination}\{dll_name}"'
         executor.submit(run_command, cmd)
+
+with open(rf".\{destination}\run_config.json", "w") as f:
+    json.dump({"completed_count": 0, "batch_count": batch_count}, f)
 
 print("完毕.")
