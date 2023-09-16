@@ -75,7 +75,6 @@ vector<Task> get_tasks()
         for (int t : {264, 323}) {
             float col = t == 264 ? 8.2625 : 8.2;
             tasks.push_back(base
-                                .check_time(401)
                                 .actions(Cob(290, "PS", {2, 2}, 9), Cob(400, "D", 1, 9),
                                     Cob(t, "B", 5, col)));
         }
@@ -98,7 +97,6 @@ vector<Task> get_tasks()
         for (int t : {225, 260, 295, 318, 341, 359, 401, 500}) {
             float col = t >= 401 ? 8.75 : 9;
             tasks.push_back(base
-                                .check_time(max(t, 401))
                                 .actions(Cob(t, "PP", {2, 5}, col)));
         }
 

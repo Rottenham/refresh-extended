@@ -20,7 +20,7 @@ clock_t start_time;
 vector<Task> all_tasks;
 int initial_total_hp[21];
 
-int wave_total_hp(int wave)
+int WaveTotalHp(int wave)
 {
     int ret;
     asm volatile("pushl %[wave];"
@@ -35,12 +35,18 @@ int wave_total_hp(int wave)
     return ret;
 }
 
+void set_wisdom_tree_height()
+{
+    if (ReadMemory<int>(0x6a9ec0, 0x82c, 0xf4) < 1000)
+        WriteMemory<int>(1000, 0x6a9ec0, 0x82c, 0xf4);
+}
+
 void unify_zombie_spawn_x(WaveType wave_type)
 {
     if (wave_type == DEFAULT)
         return;
     auto x_offset = (wave_type == ALL_HUGE) ? 40 : -40;
-    set<ZombieType> exclude_zombie_list = {FLAG_ZOMBIE, POLE_VAULTING_ZOMBIE, ZOMBONI,
+    set<ZombieType> excluded_zombie_types = {FLAG_ZOMBIE, POLE_VAULTING_ZOMBIE, ZOMBONI,
         CATAPULT_ZOMBIE, GARGANTUAR, GIGA_GARGANTUAR, BUNGEE_ZOMBIE};
     for (auto wave = 1; wave <= 20; wave++) {
         if ((wave_type == ALL_HUGE) && (wave == 10 || wave == 20))
@@ -51,11 +57,12 @@ void unify_zombie_spawn_x(WaveType wave_type)
             1, wave,
             [=]() {
                 for (auto& z : alive_zombie_filter) {
-                    if (z.existTime() < 5
-                        && exclude_zombie_list.find((ZombieType)z.type())
-                            != exclude_zombie_list.end()) {
-                        z.abscissa() += x_offset;
-                    }
+                    if (z.existTime() >= 5)
+                        continue;
+                    if (excluded_zombie_types.find((ZombieType)z.type())
+                        != excluded_zombie_types.end())
+                        continue;
+                    z.abscissa() += x_offset;
                 }
             },
             "unify_zombie_spawn_x");
@@ -120,12 +127,18 @@ void Script()
 {
     if (first_run) {
         first_run = false;
+        set_wisdom_tree_height();
         start_time = clock();
         all_tasks = get_tasks_in_current_batch();
+        if (all_tasks.empty()) {
+            ShowErrorNotInQueue("没有测试任务. 中止.");
+            return;
+        }
         cur_task = all_tasks.begin();
         initialize_task();
         extract_exe();
     }
+
     if (progress == cur_task->total) {
         vector<string> idents;
         for (int i = 0; i < cur_task->check_time.size(); i++)
@@ -191,15 +204,23 @@ void Script()
                 cur_task->check_time[i], wave,
                 [=]() {
                     auto& rd = refresh_data[i];
+                    int hp = 0;
                     rd.left_count[wave].clear();
-                    for (auto& z : alive_zombie_filter)
+                    for (auto& z : alive_zombie_filter) {
                         if (z.standState() == wave - 1 && !z.mRef<bool>(0xb8)) {
+                            if (!RangeIn(z.type(), {BACKUP_DANCER, BUNGEE_ZOMBIE}))
+                                hp += z.hp() + z.oneHp() + z.twoHp() / 5 + z.mRef<int>(0xe4);
                             int type = z.type();
                             if (RangeIn(z.type(), {GARGANTUAR, GIGA_GARGANTUAR}))
                                 type = z.type() * 10 + ceil(z.hp() / 1800.0);
                             rd.left_count[wave][type]++;
                         }
-                    int hp = wave_total_hp(wave);
+                    }
+                    int hp2 = WaveTotalHp(wave);
+                    if (hp != hp2) {
+                        ShowErrorNotInQueue("计算总血量 = #\n实际总血量 = #", hp, hp2);
+                        throw Exception("");
+                    }
                     rd.hp_ratio[wave] = 1.0 * hp / initial_total_hp[wave];
                     double refresh_prob = (0.65 - min(max(rd.hp_ratio[wave], 0.5), 0.65)) / 0.15;
                     rd.wave_prob[wave] = cur_task->assume_refresh ? 1 - refresh_prob : refresh_prob;

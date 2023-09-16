@@ -55,7 +55,7 @@ std::vector<int> deduce_check_time(
     if (!original_check_time.empty()) {
         return original_check_time;
     } else {
-        return {sorted_actions.back().time > 401 ? 401 : sorted_actions.back().time};
+        return {sorted_actions.back().time < 401 ? 401 : sorted_actions.back().time};
     }
 }
 
@@ -109,6 +109,11 @@ public:
             ShowErrorNotInQueue("Task 未完成初始化");
             throw Exception("");
         }
+        if (actions_.empty()) {
+            ShowErrorNotInQueue("actions 不可为空");
+            throw Exception("");
+        }
+
         auto sorted_actions = actions_;
         std::sort(sorted_actions.begin(), sorted_actions.end());
 
@@ -138,7 +143,7 @@ public:
         ss << "n(" << zombie_types_to_string(sorted_banned_types) << ")";
         if (validated_giga_count >= 0)
             ss << "g(" << std::to_string(validated_giga_count) << ")";
-        ss << assume_refresh_ ? "R" : "S";
+        ss << (assume_refresh_ ? "R" : "S");
         if (huge_)
             ss << "H";
         if (uniform_summon_)
@@ -149,7 +154,7 @@ public:
 
         return {to_gbk(output_folder_), to_gbk(output_filename), huge_, assume_refresh_,
             dance_cheat_, uniform_summon_, debug_, clear_zombies_, validated_giga_count, total_,
-            check_time_, deduced_card_selection, sorted_required_types, sorted_banned_types,
+            deduced_check_time, deduced_card_selection, sorted_required_types, sorted_banned_types,
             operations};
     }
 
