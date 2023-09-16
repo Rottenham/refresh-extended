@@ -68,7 +68,6 @@ vector<Task> get_tasks()
         // PPD(smart)
         for (int t : {296, 341, 401, 441}) {
             tasks.push_back(base
-                                .check_time(max(t, 401))
                                 .actions(Cob(t, "PP", {2, 5}, 9),
                                     SmartCard(t, CHERRY_BOMB, {GARGANTUAR, GIGA_GARGANTUAR}, {{{1, 2}, 2}, {{5, 6}, 5}}, 9)));
         }
@@ -76,7 +75,6 @@ vector<Task> get_tasks()
         // PPD
         for (int t : {296, 341, 401, 441}) {
             tasks.push_back(base
-                                .check_time(max(t, 401))
                                 .actions(Cob(t, "PP", {2, 5}, 9),
                                     Cob(t, "D", 2, 9)));
         }
@@ -84,7 +82,6 @@ vector<Task> get_tasks()
         // P/PSD
         for (int t : {296, 341, 359, 401}) {
             tasks.push_back(base
-                                .check_time(401)
                                 .actions(Cob(t, "P", 2, 9),
                                     Cob(t - 107, "PS", {5, 5}, 9), Cob(t, "D", 5, 9)));
         }
@@ -92,7 +89,6 @@ vector<Task> get_tasks()
         // PSD/P
         for (int t : {296, 341, 359, 401}) {
             tasks.push_back(base
-                                .check_time(401)
                                 .actions(Cob(t - 107, "PS", {2, 2}, 9), Cob(t, "D", 1, 9),
                                     Cob(t, "P", 5, 9)));
         }
@@ -104,12 +100,10 @@ vector<Task> get_tasks()
         // PP
         for (int t = 341; t <= 441; t += 10) {
             tasks.push_back(base
-                                .check_time(max(t, 401))
                                 .actions(Cob(t, "PP", {2, 5}, 9)));
 
             tasks.push_back(base
                                 .dance_cheat(false)
-                                .check_time(max(t, 401))
                                 .actions(Cob(t, "PP", {2, 5}, 9)));
         }
     }
