@@ -49,6 +49,35 @@ public:                                                                         
         return x;                                                                                  \
     }
 
+std::vector<int> deduce_check_time(
+    const std::vector<int>& original_check_time, const std::vector<Action>& sorted_actions)
+{
+    if (!original_check_time.empty()) {
+        return original_check_time;
+    } else {
+        return {sorted_actions.back().time};
+    }
+}
+
+std::vector<int> deduce_card_selection(const std::vector<Action>& sorted_actions)
+{
+    std::set<int> card_selection;
+    for (const auto& action : sorted_actions) {
+        if (action.plant_type >= 0)
+            card_selection.insert(action.plant_type);
+    }
+    return std::vector<int>(card_selection.begin(), card_selection.end());
+}
+
+std::vector<std::function<void(int)>> get_operations(const std::vector<Action>& sorted_actions)
+{
+    std::vector<std::function<void(int)>> operations;
+    for (const auto& action : sorted_actions) {
+        operations.push_back(action.operation);
+    }
+    return operations;
+}
+
 class TaskBuilder {
 private:
     std::set<int> initalized;
@@ -56,10 +85,10 @@ private:
     _REISEN_TASK_H_MEMBER_REQUIRED(bool, huge)
     _REISEN_TASK_H_MEMBER_REQUIRED(bool, assume_refresh)
     _REISEN_TASK_H_MEMBER_REQUIRED(int, total)
-    _REISEN_TASK_H_MEMBER_REQUIRED(std::vector<int>, check_time)
     _REISEN_TASK_H_MEMBER_REQUIRED(std::vector<ZombieType>, required_types)
     _REISEN_TASK_H_MEMBER_REQUIRED(std::vector<ZombieType>, banned_types)
     _REISEN_TASK_H_MEMBER_REQUIRED(std::vector<Action>, actions)
+    _REISEN_TASK_H_MEMBER_OPTIONAL(std::vector<int>, check_time, {})
     _REISEN_TASK_H_MEMBER_OPTIONAL(bool, debug, false)
     _REISEN_TASK_H_MEMBER_OPTIONAL(bool, uniform_summon, false)
     _REISEN_TASK_H_MEMBER_OPTIONAL(bool, clear_zombies, true)
@@ -74,24 +103,34 @@ private:
     }
 
 public:
-    Task build()
+    Task build() const
     {
-        if (initalized.size() != 8) {
+        if (initalized.size() != 7) {
             ShowErrorNotInQueue("Task 未完成初始化");
             throw Exception("");
         }
-        std::sort(actions_.begin(), actions_.end());
-        std::sort(required_types_.begin(), required_types_.end(),
-            [](ZombieType a, ZombieType b) { return a > b; });
-        std::sort(banned_types_.begin(), banned_types_.end(),
+        auto sorted_actions = actions_;
+        std::sort(sorted_actions.begin(), sorted_actions.end());
+
+        auto sorted_required_types = required_types_;
+        std::sort(sorted_required_types.begin(), sorted_required_types.end(),
             [](ZombieType a, ZombieType b) { return a > b; });
 
+        auto sorted_banned_types = banned_types_;
+        std::sort(sorted_banned_types.begin(), sorted_banned_types.end(),
+            [](ZombieType a, ZombieType b) { return a > b; });
+
+        auto deduced_check_time = deduce_check_time(check_time_, sorted_actions);
+        auto deduced_card_selection = deduce_card_selection(sorted_actions);
+        auto operations = get_operations(sorted_actions);
+
+        // 构建 output filename
         std::stringstream ss;
-        for (const auto& action : actions_) {
+        for (const auto& action : sorted_actions) {
             ss << action.str << " ";
         }
-        ss << "y(" << zombie_types_to_string(required_types_) << ") ";
-        ss << "n(" << zombie_types_to_string(banned_types_) << ")";
+        ss << "y(" << zombie_types_to_string(sorted_required_types) << ") ";
+        ss << "n(" << zombie_types_to_string(sorted_banned_types) << ")";
         if (giga_count_ >= 0)
             ss << "g(" << std::to_string(giga_count_) << ")";
         ss << assume_refresh_ ? "R" : "S";
@@ -102,20 +141,11 @@ public:
         if (dance_cheat_)
             ss << "D";
         auto output_filename = ss.str();
-        std::vector<std::function<void(int)>> operations;
-        for (const auto& action : actions_) {
-            operations.push_back(action.operation);
-        }
-        std::set<int> card_selection;
-        for (const auto& action : actions_) {
-            if (action.plant_type >= 0)
-                card_selection.insert(action.plant_type);
-        }
+
         return {to_gbk(output_folder_), to_gbk(output_filename), huge_, assume_refresh_,
             dance_cheat_, uniform_summon_, debug_, clear_zombies_, giga_count_, total_, check_time_,
-            std::vector<int>(card_selection.begin(), card_selection.end()), required_types_,
-            banned_types_, operations};
+            deduced_card_selection, sorted_required_types, sorted_banned_types, operations};
     }
 
-    operator Task() { return build(); }
+    operator Task() const { return build(); }
 };
