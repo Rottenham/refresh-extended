@@ -1,8 +1,37 @@
 #include "refresh_extended/refresh.h"
 
-string base_path = R"(C:\Games\Plants vs. Zombies\Data\刷新\自然自测\PE)";
+/***** 配置部分 *****/
+string base_path = R"(C:\Games\Plants vs. Zombies\Data\刷新\自然自测\PE)"; // 输出文件夹位置
+const int TOTAL_ROUND = 1000;                                              // 测试选卡数
+/***** 配置部分结束 *****/
 
-auto default_conf = TaskBuilder().total(1).uniform_summon(false);
+/*
+请确保输出文件夹包含如下子目录（可复制template文件夹）:
+└─ 红白
+   ├─ 激活
+   └─ 分离
+└─ 红
+   ├─ 激活
+   ├─ 大波激活
+   └─ 分离
+└─ 白
+   └─ 分离
+└─ 快速
+   ├─ 大波激活
+   └─ 分离
+
+测试用阵型的布阵码：LI43bJyUlFSWXNR1tiSEVdUzbnA2RzV0lkhU5K1E11Y=
+
+PvZ 10开的情况下，运行以下脚本需要约 [TOTAL_ROUND * 3]s
+*/
+
+#ifdef TEST_RUN
+const int ROUND_NUM = 1;
+#else
+const int ROUND_NUM = TOTAL_ROUND;
+#endif
+
+auto default_conf = TaskBuilder().total(ROUND_NUM).uniform_summon(false);
 auto norm_act = default_conf.huge(false).assume_refresh(true);
 auto norm_sep = default_conf.huge(false).assume_refresh(false);
 auto huge_act = default_conf.huge(true).assume_refresh(true);
@@ -10,9 +39,6 @@ auto huge_sep = default_conf.huge(true).assume_refresh(false);
 
 auto hb_n_a = norm_act.output_folder(base_path + "\\红白\\激活")
                   .required_types({GARGANTUAR, GIGA_GARGANTUAR})
-                  .banned_types({});
-auto hb_h_a = huge_act.output_folder(base_path + "\\红白\\大波激活")
-                  .required_types({GIGA_GARGANTUAR})
                   .banned_types({});
 auto hb_n_s = norm_sep.output_folder(base_path + "\\红白\\分离")
                   .required_types({GARGANTUAR, GIGA_GARGANTUAR, ZOMBONI})
@@ -39,12 +65,6 @@ auto f_h_s = huge_act.output_folder(base_path + "\\快速\\分离")
                  .required_types({})
                  .banned_types({GARGANTUAR, GIGA_GARGANTUAR});
 
-/*
-测试用阵型的布阵码：LI43bJyUlFSWXNR1tiSEVdUzbnA2RzV0lkhU5K1E11Y=
-
-运行以下脚本约需 N * 30s（10开）
-*/
-
 vector<Task> get_tasks()
 {
     vector<Task> tasks;
@@ -54,7 +74,8 @@ vector<Task> get_tasks()
         // PSDB
         for (int t : {264, 323}) {
             float col = t == 264 ? 8.2625 : 8.2;
-            tasks.push_back(base.check_time(401)
+            tasks.push_back(base
+                                .check_time(401)
                                 .actions(Cob(290, "PS", {2, 2}, 9), Cob(400, "D", 1, 9),
                                     Cob(t, "B", 5, col)));
         }
@@ -105,7 +126,7 @@ vector<Task> get_tasks()
 
         // 100I-PP / 100IPP-PP
         for (int t = 950; t <= 1550; t += 100) {
-            float col = t == 1450 ? 8.625 : (t == 1550 ? 8.4 : 8.75); // 长冰波落点需要适当左移
+            float col = t == 1450 ? 8.625 : (t == 1550 ? 8.4 : 8.75); // 长冰波落点需要适当左移收跳跳
             tasks.push_back(base
                                 .check_time(t)
                                 .actions(FixedCard(100, ICE_SHROOM, 1, 1),
@@ -122,7 +143,8 @@ vector<Task> get_tasks()
     for (auto& base : {hb_n_a}) {
         // PPI
         for (int t : {225, 258, 291, 318}) {
-            tasks.push_back(base.check_time(401)
+            tasks.push_back(base
+                                .check_time(401)
                                 .actions(Cob(t, "PP", {2, 5}, 9),
                                     FixedCard(t + 1, ICE_SHROOM, 1, 1)));
         }

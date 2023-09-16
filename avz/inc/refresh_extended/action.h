@@ -69,7 +69,7 @@ struct Action {
     bool operator<(const Action& other) const { return time < other.time; }
 };
 
-Action FixedCard(int time, PlantType plant_type, int row, int col)
+Action FixedCard(int time, PlantType plant_type, int row, int col, int shovel_delay = -1)
 {
     std::stringstream ss;
     auto symbol = plant_type_to_symbol(plant_type);
@@ -79,13 +79,21 @@ Action FixedCard(int time, PlantType plant_type, int row, int col)
         ss << symbol << "(" << time << "," << row << "-" << col << ")";
     }
     return {time, ss.str(),
-        [time, plant_type, row, col](int wave) {
+        [time, plant_type, row, col, shovel_delay](int wave) {
             if (plant_type == SQUASH) {
                 SetTime(time - 182, wave);
-            } else {
+            } else if (plant_type == BLOVER) {
+                SetTime(time - 150, wave); // 此处留有一定允差，等气球被吹出屏幕
+            } else if (RangeIn(plant_type, {ICE_SHROOM, DOOM_SHROOM, CHERRY_BOMB, JALAPENO})) {
                 SetTime(time - 100, wave);
+            } else if (plant_type == SPIKEWEED) {
+                SetTime(time - 26, wave);
             }
             Card(plant_type, row, col);
+            if (shovel_delay > 0) {
+                SetTime(time + shovel_delay, wave);
+                Shovel(row, col);
+            }
         },
         plant_type};
 }

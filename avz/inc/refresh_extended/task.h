@@ -55,7 +55,7 @@ std::vector<int> deduce_check_time(
     if (!original_check_time.empty()) {
         return original_check_time;
     } else {
-        return {max(sorted_actions.back().time, 401)};
+        return {sorted_actions.back().time > 401 ? 401 : sorted_actions.back().time};
     }
 }
 
@@ -122,6 +122,11 @@ public:
 
         auto deduced_check_time = deduce_check_time(check_time_, sorted_actions);
         auto deduced_card_selection = deduce_card_selection(sorted_actions);
+        auto validated_giga_count
+            = std::find(sorted_required_types.begin(), sorted_required_types.end(), GIGA_GARGANTUAR)
+                == sorted_required_types.end()
+            ? -1
+            : giga_count_;
         auto operations = get_operations(sorted_actions);
 
         // 构建 output filename
@@ -131,8 +136,8 @@ public:
         }
         ss << "y(" << zombie_types_to_string(sorted_required_types) << ") ";
         ss << "n(" << zombie_types_to_string(sorted_banned_types) << ")";
-        if (giga_count_ >= 0)
-            ss << "g(" << std::to_string(giga_count_) << ")";
+        if (validated_giga_count >= 0)
+            ss << "g(" << std::to_string(validated_giga_count) << ")";
         ss << assume_refresh_ ? "R" : "S";
         if (huge_)
             ss << "H";
@@ -143,8 +148,9 @@ public:
         auto output_filename = ss.str();
 
         return {to_gbk(output_folder_), to_gbk(output_filename), huge_, assume_refresh_,
-            dance_cheat_, uniform_summon_, debug_, clear_zombies_, giga_count_, total_, check_time_,
-            deduced_card_selection, sorted_required_types, sorted_banned_types, operations};
+            dance_cheat_, uniform_summon_, debug_, clear_zombies_, validated_giga_count, total_,
+            check_time_, deduced_card_selection, sorted_required_types, sorted_banned_types,
+            operations};
     }
 
     operator Task() const { return build(); }

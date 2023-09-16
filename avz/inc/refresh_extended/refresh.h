@@ -40,7 +40,7 @@ void unify_zombie_spawn_x(WaveType wave_type)
     if (wave_type == DEFAULT)
         return;
     auto x_offset = (wave_type == ALL_HUGE) ? 40 : -40;
-    std::set<ZombieType> exclude_zombie_list = {FLAG_ZOMBIE, POLE_VAULTING_ZOMBIE, ZOMBONI,
+    set<ZombieType> exclude_zombie_list = {FLAG_ZOMBIE, POLE_VAULTING_ZOMBIE, ZOMBONI,
         CATAPULT_ZOMBIE, GARGANTUAR, GIGA_GARGANTUAR, BUNGEE_ZOMBIE};
     for (auto wave = 1; wave <= 20; wave++) {
         if ((wave_type == ALL_HUGE) && (wave == 10 || wave == 20))
@@ -62,8 +62,7 @@ void unify_zombie_spawn_x(WaveType wave_type)
     }
 }
 
-void kill_all_zombies(
-    const std::set<int>& wave, const std::set<ZombieType>& type_list = {}, int time = 1)
+void kill_all_zombies(const set<int>& wave, const set<ZombieType>& type_list = {}, int time = 1)
 {
     if (time < 0) {
         time = 1;
@@ -85,7 +84,7 @@ void kill_all_zombies(
     }
 }
 
-std::vector<Task> get_tasks_in_current_batch()
+vector<Task> get_tasks_in_current_batch()
 {
     auto tasks = get_tasks(); // 拆分测试任务
     int batch_count = 1;
