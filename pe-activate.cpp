@@ -90,7 +90,6 @@ vector<Task> get_tasks()
         // AA'a
         for (int t : {200, 225, 260, 300, 340, 480, 400}) {
             tasks.push_back(base
-                                .check_time(401)
                                 .actions(FixedCard(t, CHERRY_BOMB, 2, 9),
                                     FixedCard(t, JALAPENO, 5, 1),
                                     FixedCard(t, SQUASH, 6, 9)));
@@ -99,11 +98,9 @@ vector<Task> get_tasks()
         // I-PP / IPP-PP
         for (int t = 1050; t <= 1550; t += 100) {
             tasks.push_back(base
-                                .check_time(t)
                                 .actions(FixedCard(1, ICE_SHROOM, 1, 1),
                                     Cob(t, "PP", {2, 5}, 8.75)));
             tasks.push_back(base
-                                .check_time(t)
                                 .actions(FixedCard(1, ICE_SHROOM, 1, 1),
                                     Cob(301, "PP", {1, 5}, 9),
                                     Cob(t, "PP", {2, 5}, 8.75)));
@@ -113,11 +110,9 @@ vector<Task> get_tasks()
         for (int t = 950; t <= 1550; t += 100) {
             float col = t == 1450 ? 8.625 : (t == 1550 ? 8.4 : 8.75); // 长冰波落点需要适当左移收跳跳
             tasks.push_back(base
-                                .check_time(t)
                                 .actions(FixedCard(100, ICE_SHROOM, 1, 1),
                                     Cob(t, "PP", {2, 5}, col)));
             tasks.push_back(base
-                                .check_time(t)
                                 .actions(FixedCard(100, ICE_SHROOM, 1, 1),
                                     Cob(301, "PP", {1, 5}, 8.6375),
                                     Cob(t, "PP", {2, 5}, col)));
@@ -129,7 +124,6 @@ vector<Task> get_tasks()
         // PPI
         for (int t : {225, 258, 291, 318}) {
             tasks.push_back(base
-                                .check_time(401)
                                 .actions(Cob(t, "PP", {2, 5}, 9),
                                     FixedCard(t + 1, ICE_SHROOM, 1, 1)));
         }
@@ -137,11 +131,9 @@ vector<Task> get_tasks()
         // PPA(A')-fixed
         for (int t : {225, 260, 296, 318}) {
             tasks.push_back(base
-                                .check_time(401)
                                 .actions(Cob(t, "PP", {2, 5}, 9),
                                     FixedCard(t + 1, JALAPENO, 1, 1)));
             tasks.push_back(base
-                                .check_time(401)
                                 .actions(Cob(t, "PP", {2, 5}, 9),
                                     FixedCard(t + 1, CHERRY_BOMB, 1, 9)));
         }
@@ -149,30 +141,24 @@ vector<Task> get_tasks()
         // PPA(A')-smart
         for (int t : {225, 260}) {
             tasks.push_back(base
-                                .check_time(401)
                                 .actions(Cob(t, "PP", {2, 5}, 9),
                                     SmartCard(t + 1, JALAPENO, {GARGANTUAR, GIGA_GARGANTUAR}, {{1, 1}, {2, 2}, {5, 5}, {6, 6}}, 1)));
             tasks.push_back(base
-                                .check_time(401)
                                 .actions(Cob(t, "PP", {2, 5}, 9),
                                     SmartCard(t + 1, CHERRY_BOMB, {GARGANTUAR, GIGA_GARGANTUAR}, {{{1, 2}, 2}, {{5, 6}, 5}}, 9)));
         }
 
         // BBDD / BBA'DD
         tasks.push_back(base
-                            .check_time(401)
                             .actions(Cob(260, "BB", {1, 5}, 9), Cob(370, "DD", {1, 5}, 8)));
         tasks.push_back(base
-                            .check_time(401)
                             .actions(Cob(260, "BB", {2, 5}, 9), FixedCard(261, JALAPENO, 1, 1),
                                 Cob(370, "DD", {1, 5}, 8)));
 
         // BB / BBA'
         tasks.push_back(base
-                            .check_time(401)
                             .actions(Cob(260, "BB", {1, 5}, 9)));
         tasks.push_back(base
-                            .check_time(401)
                             .actions(Cob(260, "BB", {2, 5}, 9), FixedCard(261, JALAPENO, 1, 1)));
     }
 
