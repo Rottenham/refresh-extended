@@ -60,7 +60,7 @@ Action FixedCard(int time, PlantType plant_type, int row, int col, int shovel_de
     std::ostringstream os;
     auto symbol = plant_type_to_symbol(plant_type);
     if (symbol == "I") {
-        os << "(" << time << ")";
+        symbol += " (" + std::to_string(time) + ")";
     } else {
         os << "(" << time << "," << row << "-" << col << ")";
     }

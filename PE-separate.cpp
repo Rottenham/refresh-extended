@@ -48,7 +48,7 @@ auto b_n_s = norm_sep.output_folder(base_path + "\\白\\分离")
 // auto f_h_a = huge_act.output_folder(base_path + "\\快速\\大波激活")
 //                  .required_types({})
 //                  .banned_types({GARGANTUAR, GIGA_GARGANTUAR});
-auto f_h_s = huge_act.output_folder(base_path + "\\快速\\分离")
+auto f_n_s = norm_sep.output_folder(base_path + "\\快速\\分离")
                  .required_types({})
                  .banned_types({GARGANTUAR, GIGA_GARGANTUAR});
 
@@ -236,6 +236,13 @@ vector<Task> get_tasks()
                         .actions(FixedCard(1, ICE_SHROOM, 1, 1),
                             Cob(173, "PP", {1, 5}, 8.225),
                             Cob(1184, "B", 3, 9)));
+
+    // 测试快速
+    for (const auto& separate_cobs : {Cob(173, "PP", {1, 5}, 8.225), Cob(301, "PP", {1, 5}, 9)}) {
+        tasks.push_back(f_n_s
+                            .actions(FixedCard(1, ICE_SHROOM, 1, 1),
+                                separate_cobs));
+    }
 
     return tasks;
 }

@@ -48,7 +48,7 @@ auto h_n_a = norm_act.output_folder(base_path + "\\红\\激活")
 // auto f_h_a = huge_act.output_folder(base_path + "\\快速\\大波激活")
 //                  .required_types({})
 //                  .banned_types({GARGANTUAR, GIGA_GARGANTUAR});
-// auto f_h_s = huge_act.output_folder(base_path + "\\快速\\分离")
+// auto f_n_s = norm_sep.output_folder(base_path + "\\快速\\分离")
 //                  .required_types({})
 //                  .banned_types({GARGANTUAR, GIGA_GARGANTUAR});
 
@@ -81,17 +81,17 @@ vector<Task> get_tasks()
         }
 
         // PP
-        for (int t : {225, 260, 295, 318, 341, 359, 401, 500}) {
+        for (int t : {225, 260, 295, 296, 318, 341, 359, 401, 500}) {
             float col = t >= 401 ? 8.75 : 9;
             tasks.push_back(base
                                 .actions(Cob(t, "PP", {2, 5}, col)));
         }
 
         // AA'a
-        for (int t : {200, 225, 260, 300, 340, 480, 400}) {
+        for (int t : {200, 225, 260, 300, 340, 380, 400}) {
             tasks.push_back(base
-                                .actions(FixedCard(t, CHERRY_BOMB, 2, 9),
-                                    FixedCard(t, JALAPENO, 5, 1),
+                                .actions(FixedCard(401, CHERRY_BOMB, 2, 9),
+                                    FixedCard(401, JALAPENO, 5, 1),
                                     FixedCard(t, SQUASH, 6, 9)));
         }
 

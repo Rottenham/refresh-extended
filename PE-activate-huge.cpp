@@ -48,7 +48,7 @@ auto h_h_a = huge_act.output_folder(base_path + "\\红\\大波激活")
 auto f_h_a = huge_act.output_folder(base_path + "\\快速\\大波激活")
                  .required_types({})
                  .banned_types({GARGANTUAR, GIGA_GARGANTUAR});
-// auto f_h_s = huge_act.output_folder(base_path + "\\快速\\分离")
+// auto f_n_s = norm_sep.output_folder(base_path + "\\快速\\分离")
 //                  .required_types({})
 //                  .banned_types({GARGANTUAR, GIGA_GARGANTUAR});
 

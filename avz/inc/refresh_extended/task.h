@@ -149,7 +149,8 @@ public:
         if (!has_trailing_space)
             ss << " ";
         for (const auto& action : sorted_actions) {
-            ss << action.params << " ";
+            if (!action.params.empty())
+                ss << action.params << " ";
         }
         ss << "y(" << zombie_types_to_string(sorted_required_types) << ") ";
         ss << "n(" << zombie_types_to_string(sorted_banned_types) << ") ";

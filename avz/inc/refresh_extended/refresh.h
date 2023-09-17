@@ -105,8 +105,11 @@ vector<Task> get_tasks_in_current_batch()
     return tasks_in_current_batch;
 }
 
-void initialize_task()
+bool initialize_task()
 {
+    if (!ensure_folder_exists(cur_task->output_folder)) {
+        return false;
+    }
     progress = 0;
     refresh_data.clear();
     sort(cur_task->check_time.begin(), cur_task->check_time.end());
@@ -116,6 +119,7 @@ void initialize_task()
         memset(rd.hist, 0, sizeof(rd.hist));
         refresh_data.push_back(rd);
     }
+    return true;
 }
 
 void Script()
@@ -130,10 +134,9 @@ void Script()
             return;
         }
         cur_task = all_tasks.begin();
-        if (!ensure_folder_exists(cur_task->output_folder)) {
+        if (!initialize_task()) {
             return;
         }
-        initialize_task();
         extract_exe();
     }
 
@@ -151,7 +154,9 @@ void Script()
             ShowErrorNotInQueue("完成\n用时：#s", int(elapsed + 0.5));
             return;
         }
-        initialize_task();
+        if (!initialize_task()) {
+            return;
+        }
     }
 
     EnableModsScoped(SaveDataReadOnly, FreePlantingCheat, PlantAnywhere, CobInstantRecharge,
@@ -224,8 +229,11 @@ void Script()
                     rd.wave_prob[wave] = cur_task->assume_refresh ? 1 - refresh_prob : refresh_prob;
                 },
                 "check_refresh");
-        if (cur_task->clear_zombies || RangeIn(wave, {9, 19, 20}))
+        if (cur_task->clear_zombies || RangeIn(wave, {9, 19, 20})) {
             kill_all_zombies({wave}, {}, last_time);
+            if (!RangeIn(wave, {9, 19, 20}))
+                SetWavelength({{wave, last_time + 200}});
+        }
     }
 
     InsertTimeOperation(
