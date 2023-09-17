@@ -98,7 +98,12 @@ private:
 
     template <typename... Args> TaskBuilder actions(Args... args) const
     {
-        return actions(std::vector<Action> {args...});
+        TaskBuilder x = *this;
+        auto all_actions = x.actions_;
+        for (const auto& action : {args...}) {
+            all_actions.push_back(action);
+        }
+        return actions(all_actions);
     }
 
 public:
@@ -131,13 +136,25 @@ public:
 
         // 构建 output filename
         std::stringstream ss;
+        bool has_trailing_space = false;
         for (const auto& action : sorted_actions) {
-            ss << action.str << " ";
+            ss << action.symbol;
+            if (action.symbol.size() > 1) {
+                ss << " ";
+                has_trailing_space = true;
+            } else {
+                has_trailing_space = false;
+            }
+        }
+        if (!has_trailing_space)
+            ss << " ";
+        for (const auto& action : sorted_actions) {
+            ss << action.params << " ";
         }
         ss << "y(" << zombie_types_to_string(sorted_required_types) << ") ";
-        ss << "n(" << zombie_types_to_string(sorted_banned_types) << ")";
+        ss << "n(" << zombie_types_to_string(sorted_banned_types) << ") ";
         if (validated_giga_count >= 0)
-            ss << "g(" << std::to_string(validated_giga_count) << ")";
+            ss << "g(" << std::to_string(validated_giga_count) << ") ";
         ss << (assume_refresh_ ? "R" : "S");
         if (huge_)
             ss << "H";

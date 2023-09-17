@@ -47,7 +47,8 @@ std::string ints_to_string(const std::vector<int>& ints, const std::string& sep)
 
 struct Action {
     int time;
-    std::string str;
+    std::string symbol; // 表示操作的简洁符号, 如BPSD等
+    std::string params; // 详细描述操作的参数, 如发炮/用卡时机
     std::function<void(int)> operation;
     int plant_type;
 
@@ -59,11 +60,11 @@ Action FixedCard(int time, PlantType plant_type, int row, int col, int shovel_de
     std::ostringstream os;
     auto symbol = plant_type_to_symbol(plant_type);
     if (symbol == "I") {
-        os << symbol << "(" << time << ")";
+        os << "(" << time << ")";
     } else {
-        os << symbol << "(" << time << "," << row << "-" << col << ")";
+        os << "(" << time << "," << row << "-" << col << ")";
     }
-    return {time, os.str(),
+    return {time, symbol, os.str(),
         [time, plant_type, row, col, shovel_delay](int wave) {
             if (plant_type == SQUASH) {
                 SetTime(time - 182, wave);
@@ -122,12 +123,12 @@ Action SmartCard(int time, PlantType plant_type, std::vector<ZombieType> assesse
     std::ostringstream os;
     auto symbol = plant_type_to_symbol(plant_type);
     if (symbol == "I") {
-        os << symbol << "(" << time << ")";
+        os << "(" << time << ")";
     } else {
-        os << symbol << "(" << time << "," << zombie_types_to_string(assessed_types) << "["
+        os << "(" << time << "," << zombie_types_to_string(assessed_types) << "["
            << strategies_to_string(strategies) << "]-" << col << ")";
     }
-    return {time, os.str(),
+    return {time, symbol, os.str(),
         [time, plant_type, assessed_types, strategies, col](int wave) {
             InsertTimeOperation(
                 time - 100, wave,
@@ -165,14 +166,14 @@ Action SmartCard(int time, PlantType plant_type, std::vector<ZombieType> assesse
 Action Cob(int time, std::string symbol, const std::vector<int>& rows, float col)
 {
     std::ostringstream os;
-    os << symbol << "(" << time << ",";
+    os << "(" << time << ",";
     if (rows.size() > 1) {
         os << "{" << ints_to_string(rows, ",") << "}";
     } else {
         os << rows[0];
     }
     os << "-" << col << ")";
-    return {time, os.str(),
+    return {time, symbol, os.str(),
         [time, rows, col](int wave) {
             auto roof = GetMainObject()->scene() >= 4;
             auto backyard = RangeIn(GetMainObject()->scene(), {2, 3});
