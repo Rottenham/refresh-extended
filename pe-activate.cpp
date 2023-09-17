@@ -27,30 +27,30 @@ auto huge_sep = default_conf.huge(true).assume_refresh(false);
 auto hb_n_a = norm_act.output_folder(base_path + "\\红白\\激活")
                   .required_types({GARGANTUAR, GIGA_GARGANTUAR})
                   .banned_types({});
-auto hb_n_s = norm_sep.output_folder(base_path + "\\红白\\分离")
-                  .required_types({GARGANTUAR, GIGA_GARGANTUAR, ZOMBONI})
-                  .banned_types({});
+// auto hb_n_s = norm_sep.output_folder(base_path + "\\红白\\分离")
+//                   .required_types({GARGANTUAR, GIGA_GARGANTUAR, ZOMBONI})
+//                   .banned_types({});
 
 auto h_n_a = norm_act.output_folder(base_path + "\\红\\激活")
                  .required_types({GIGA_GARGANTUAR})
                  .banned_types({GARGANTUAR});
-auto h_h_a = huge_act.output_folder(base_path + "\\红\\大波激活")
-                 .required_types({GIGA_GARGANTUAR})
-                 .banned_types({});
-auto h_n_s = norm_sep.output_folder(base_path + "\\红\\分离")
-                 .required_types({GIGA_GARGANTUAR, ZOMBONI})
-                 .banned_types({GARGANTUAR});
+// auto h_h_a = huge_act.output_folder(base_path + "\\红\\大波激活")
+//                  .required_types({GIGA_GARGANTUAR})
+//                  .banned_types({});
+// auto h_n_s = norm_sep.output_folder(base_path + "\\红\\分离")
+//                  .required_types({GIGA_GARGANTUAR, ZOMBONI})
+//                  .banned_types({GARGANTUAR});
 
-auto b_n_s = norm_sep.output_folder(base_path + "\\白\\分离")
-                 .required_types({GARGANTUAR, ZOMBONI})
-                 .banned_types({GIGA_GARGANTUAR});
+// auto b_n_s = norm_sep.output_folder(base_path + "\\白\\分离")
+//                  .required_types({GARGANTUAR, ZOMBONI})
+//                  .banned_types({GIGA_GARGANTUAR});
 
-auto f_h_a = huge_act.output_folder(base_path + "\\快速\\大波激活")
-                 .required_types({})
-                 .banned_types({GARGANTUAR, GIGA_GARGANTUAR});
-auto f_h_s = huge_act.output_folder(base_path + "\\快速\\分离")
-                 .required_types({})
-                 .banned_types({GARGANTUAR, GIGA_GARGANTUAR});
+// auto f_h_a = huge_act.output_folder(base_path + "\\快速\\大波激活")
+//                  .required_types({})
+//                  .banned_types({GARGANTUAR, GIGA_GARGANTUAR});
+// auto f_h_s = huge_act.output_folder(base_path + "\\快速\\分离")
+//                  .required_types({})
+//                  .banned_types({GARGANTUAR, GIGA_GARGANTUAR});
 
 vector<Task> get_tasks()
 {
