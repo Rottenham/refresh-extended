@@ -152,10 +152,10 @@ public:
             if (!action.params.empty())
                 ss << action.params << " ";
         }
-        ss << "y(" << zombie_types_to_string(sorted_required_types) << ") ";
-        ss << "n(" << zombie_types_to_string(sorted_banned_types) << ") ";
         if (validated_giga_count >= 0)
             ss << "g(" << std::to_string(validated_giga_count) << ") ";
+        ss << "y(" << zombie_types_to_string(sorted_required_types) << ") ";
+        ss << "n(" << zombie_types_to_string(sorted_banned_types) << ") ";
         ss << (assume_refresh_ ? "R" : "S");
         if (huge_)
             ss << "H";

@@ -151,7 +151,11 @@ void Script()
         cur_task++;
         if (cur_task == all_tasks.end()) {
             double elapsed = 1.0 * (clock() - start_time) / CLOCKS_PER_SEC;
-            ShowErrorNotInQueue("完成\n用时：#s", int(elapsed + 0.5));
+            int total_time_in_secs = int(elapsed + 0.5);
+            int hours = total_time_in_secs / 3600;
+            int minutes = (total_time_in_secs % 3600) / 60;
+            int seconds = (total_time_in_secs % 3600) % 60;
+            ShowErrorNotInQueue("完成\n用时：#小时 #分 #秒", hours, minutes, seconds);
             return;
         }
         if (!initialize_task()) {
