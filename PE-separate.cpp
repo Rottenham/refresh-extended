@@ -238,7 +238,7 @@ vector<Task> get_tasks()
                             Cob(1184, "B", 3, 9)));
 
     // 测试快速
-    for (const auto& separate_cobs : {Cob(173, "PP", {1, 5}, 8.225), Cob(301, "PP", {1, 5}, 9)}) {
+    for (const auto& separate_cobs : {Cob(173, "P", 1, 8.225), Cob(301, "P", 1, 9)}) {
         tasks.push_back(f_n_s
                             .actions(FixedCard(1, ICE_SHROOM, 1, 1),
                                 separate_cobs));

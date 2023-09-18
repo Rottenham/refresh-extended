@@ -80,14 +80,14 @@ vector<Task> get_tasks()
         }
 
         // P/PSD
-        for (int t : {296, 341, 359, 401}) {
+        for (int t : {296, 341, 359, 386, 401}) {
             tasks.push_back(base
                                 .actions(Cob(t, "P", 2, 9),
                                     Cob(t - 107, "PS", {5, 5}, 9), Cob(t, "D", 5, 9)));
         }
 
         // PSD/P
-        for (int t : {296, 341, 359, 401}) {
+        for (int t : {296, 341, 359, 386, 401}) {
             tasks.push_back(base
                                 .actions(Cob(t - 107, "PS", {2, 2}, 9), Cob(t, "D", 1, 9),
                                     Cob(t, "P", 5, 9)));

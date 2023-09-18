@@ -29,7 +29,7 @@ try:
         config = json.load(f)
         batch_count = config["batch_count"]
         batch_start = config["completed_count"] + 1
-        if batch_start >= batch_count:
+        if batch_start > batch_count:
             print("已完成所有测试.")
             exit()
         batch_end = min(batch_start + num_of_dll_to_run - 1, batch_count)
