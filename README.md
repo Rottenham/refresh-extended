@@ -13,7 +13,7 @@
 
 ## 文件命名规则
 
-输出文件采用[法棍](https://assassinscreed.fandom.com/wiki/Arno_Dorian)式命名，以 `IPP JA (100) (301, {1,5}-9) (600, 3, 9) (900, 红白[1,2→2, 5,6→5]-9) y(红白) n(车) g(0) RHUD.xlsx` 为例：
+输出文件采用[法棍](https://assassinscreed.fandom.com/wiki/Arno_Dorian)式命名，以 `I (100) PP JA (301, {1,5}-9) (600, 3, 9) (900, 红白[1,2→2, 5,6→5]-9) y(红白) n(车) g(0) RHUD.xlsx` 为例：
 ```c++
 // 操作部分
 I(100)                         // 于100生效冰
