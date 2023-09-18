@@ -9,7 +9,7 @@ const int TOTAL_ROUND = 1000;                                              // �
 测试用阵型的布阵码：LI43bJyUlFSWXNR1tiSEVdUzbnA2RzV0lkhU5K1E11Y=
 (现成存档：saves\game1_13.dat)
 
-PvZ 10开的情况下，运行以下脚本需要约 [TOTAL_ROUND * 3]s
+PvZ 10开的情况下，运行以下脚本需要约 [TOTAL_ROUND * 30]s
 */
 
 #ifdef TEST_RUN
