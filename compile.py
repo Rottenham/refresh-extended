@@ -4,7 +4,7 @@
 avz_dir = r"C:\Games\Plants vs. Zombies\Tools\src\AsmVsZombies"  # AvZ安装目录
 dll_count = 10  # 编译为多少个dll文件
 source = r"pe-activate.cpp"  # 源码文件名
-destination = r"dest_test"  # 输出文件夹
+destination = r"dest"  # 输出文件夹
 
 ########## 配置部分结束 ##########
 
